@@ -1,22 +1,44 @@
 from uszipcode import ZipcodeSearchEngine
-from JobBard.location.models import  City, State, Location
+from location.models import City, State, Location
+
+
 
 class LocationManager:
     __search_object = ZipcodeSearchEngine()
 
 
+    def getCloseLocations(self,location,radius_in_miles =15):
+        city_name = location.city.name
+        state_name = location.state.name
+        zip_code = self._getZipByCityState(city_name,state_name)
+        cities_in_radius = self._getZipCodesNear(zip_code,radius_in_miles)
+        return Location.objects.filter(city__name__in = cities_in_radius )
 
 
     def getOrCreate(self,city,state):
-        zip_code = self._getZipByCityState(city,state)
-        city_model, city_created = City.objects.get_or_create(name=city, zip_code=zip_code)
-        state_model, state_created = State.objects.get_or_create(name=state)
 
-        location_model, location_created = Location.objects.get_or_create(city=city_model,state=state_model)
+        try:
+            location_object = self.getLocationObjectByCityState(city,state)
+            zip_code = location_object.Zipcode
+            city_true_name = location_object.City
+            state_true_name = location_object.State
+            city_model, city_created = City.objects.get_or_create(name=city_true_name, zip_code=zip_code)
+            state_model, state_created = State.objects.get_or_create(name=state_true_name)
+            location_model, location_created = Location.objects.get_or_create(city=city_model,state=state_model)
+        except ValueError:
+            city_model, city_created = City.objects.get_or_create(name=city, zip_code="Invalid")
+            state_model, state_created = State.objects.get_or_create(name=state)
+            location_model, location_created = Location.objects.get_or_create(city=city_model, state=state_model)
 
         return location_model
 
 
+    def getLocationObjectByCityState(self,city,state):
+        matching_location_objects = self.__search_object.by_city_and_state(city, state)
+        if (len(matching_location_objects) == 0):
+            return None
+
+        return matching_location_objects[0]
 
     def _getZipByCityState(self,city,state):
         matching_location_objects = self.__search_object.by_city_and_state(city,state)
@@ -35,10 +57,10 @@ class LocationManager:
 
     def _getZipCodesNear(self,zip_code,radius_in_miles=15):
         try:
-            (latitude,longitude) = self.getLatLongByZip(zip_code)
+            (latitude,longitude) = self._getLatLongByZip(zip_code)
         except TypeError:
             return []
 
-        locations_in_radius = self.__search_object.by_coordinate(latitude,longitude,radius=radius_in_miles)
+        locations_in_radius = self.__search_object.by_coordinate(latitude,longitude,radius=radius_in_miles,returns=0)
 
-        return [location.Zipcode for location in locations_in_radius]
+        return set([location.City for location in locations_in_radius])
