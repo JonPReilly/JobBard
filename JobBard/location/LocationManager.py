@@ -10,7 +10,10 @@ class LocationManager:
     def getCloseLocations(self,location,radius_in_miles =15):
         city_name = location.city.name
         state_name = location.state.name
-        zip_code = self._getZipByCityState(city_name,state_name)
+        try:
+            zip_code = self._getZipByCityState(city_name,state_name)
+        except ValueError:
+            return []
         cities_in_radius = self._getZipCodesNear(zip_code,radius_in_miles)
         return Location.objects.filter(city__pk__in = cities_in_radius )
 
@@ -33,19 +36,17 @@ class LocationManager:
         return location_model
 
 
+
     def getLocationObjectByCityState(self,city,state):
         matching_location_objects = self.__search_object.by_city_and_state(city, state)
         if (len(matching_location_objects) == 0):
-            return None
+            raise ValueError
 
         return matching_location_objects[0]
 
     def _getZipByCityState(self,city,state):
-        matching_location_objects = self.__search_object.by_city_and_state(city,state)
-        if (len(matching_location_objects) == 0):
-            return None
-
-        zip_code = matching_location_objects[0]['Zipcode']
+        matching_location_object = self.getLocationObjectByCityState(city,state)
+        zip_code = matching_location_object[0]['Zipcode']
         return zip_code
 
 

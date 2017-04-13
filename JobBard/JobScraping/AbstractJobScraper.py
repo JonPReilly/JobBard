@@ -36,6 +36,21 @@ class AbstractJobScraper(ABC):
             request_headers[key] = headers[key]
         return request_headers
 
+
+
+    def loadScrapeObjectFromString(self,page_content):
+        self.soupObject = BeautifulSoup(page_content.read(), self.scrape_format)
+
+    def loadScrapeObjectFromJson(self,page_content):
+        content = page_content.read().decode('utf-8')
+        self.soupObject = (json.loads(content))
+
+    def loadScrapeObject(self,page_content):
+        if (self.scrape_format is not 'json'):
+            self.loadScrapeObjectFromString(page_content)
+        else:
+            self.loadScrapeObjectFromJson(page_content)
+
     def openUrl(self,url, headers={},form_data={}):
         request_headers = self.getHeaders(headers)
         try:
@@ -44,11 +59,19 @@ class AbstractJobScraper(ABC):
         except (URLError, HTTPError) as e:
             self.soupObject = BeautifulSoup("")
             return
-        if (self.scrape_format is not 'json'):
-            self.soupObject = BeautifulSoup(page_content.read(), self.scrape_format)
-        else:
-            content = page_content.read().decode('utf-8')
-            self.soupObject = (json.loads(content))
+        self.loadScrapeObject(page_content)
+
+    def getJobAttributes(self, job):
+        job_attributes = {}
+        job_attributes['job_company_name'] = self.getCompany(job)
+        job_attributes['job_title'] = self.getJobTitle(job)
+        job_attributes['job_description'] = self.getJobDescription(job)
+        job_attributes['job_url'] = self.getJobUrl(job)
+        job_attributes['job_required_experience'] = self.getRequiredExperience(job)
+        job_attributes['job_years_experience'] = self.getYearsExperience(job_attributes['job_required_experience'])
+        job_attributes['job_location'] = self.getJobLocation(job)
+        job_attributes['job_posted_date'] = self.parseDate(self.getPostedDate(job))
+        return job_attributes
 
     def scrape(self):
         jobs_added = 0
@@ -56,24 +79,17 @@ class AbstractJobScraper(ABC):
             return jobs_added
         
         for job in self.getAllJobs():
-            job_company_name = self.getCompany(job)
-            job_title = self.getJobTitle(job)
-            job_description = self.getJobDescription(job)
-            job_url = self.getJobUrl(job)
-            job_required_experience = self.getRequiredExperience(job)
-            job_years_experience = self.getYearsExperience(job_required_experience)
-            job_location = self.getJobLocation(job)
-            job_posted_date = self.parseDate(self.getPostedDate(job))
+            job_attributes = self.getJobAttributes(job)
 
             self.addJob(
-                company_name=job_company_name,
-                location=job_location,
-                title=job_title,
-                url=job_url,
-                description=job_description,
-                required_experience=job_required_experience,
-                years_experience=job_years_experience,
-                posted_date = job_posted_date
+                company_name=job_attributes['job_company_name'],
+                location=job_attributes['job_location'],
+                title=job_attributes['job_title'],
+                url=job_attributes['job_url'],
+                description=job_attributes['job_description'],
+                required_experience=job_attributes['job_required_experience'],
+                years_experience=job_attributes['job_years_experience'],
+                posted_date = job_attributes['job_posted_date']
             )
 
 
