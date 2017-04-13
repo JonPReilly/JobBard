@@ -29,7 +29,7 @@ class JsonScraper(AbstractJobScraper):
             self.scrape_pattern['title']
         ]
 
-    def getLocation(self, job):
+    def getJobLocation(self, job):
         city = job[
             self.scrape_pattern['city']
         ]
