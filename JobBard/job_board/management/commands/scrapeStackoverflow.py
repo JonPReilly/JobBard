@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Loads jobs from files into DB"
+    help = "Scrapes Stack Overflow for jobs"
 
     def handle(self, *args, **options):
         urls = [

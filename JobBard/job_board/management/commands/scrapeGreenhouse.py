@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Loads jobs from files into DB"
+    help = "Scrapes Greenhouse for jobs"
 
     def handle(self, *args, **options):
 

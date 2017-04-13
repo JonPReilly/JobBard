@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Loads jobs from files into DB"
+    help = "Scrapes Twitter for jobs"
 
     def handle(self, *args, **options):
         url = "https://careers.twitter.com/content/careers-twitter/en/jobs-search.html?q=software&start="
