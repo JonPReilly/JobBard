@@ -1,4 +1,3 @@
-# https://api.greenhouse.io/v1/boards/slack/jobs
 import random
 import time
 
