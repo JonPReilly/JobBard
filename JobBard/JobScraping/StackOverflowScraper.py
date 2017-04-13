@@ -2,6 +2,7 @@ from datetime import datetime
 
 from .AbstractJobScraper import AbstractJobScraper
 
+
 class StackOverflowScraper(AbstractJobScraper):
     def __init__(self):
         self.type = "STACKOVERFLOW"
