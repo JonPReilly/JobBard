@@ -17,11 +17,6 @@ class Command(BaseCommand):
             "http://stackoverflow.com/jobs/feed?cl=Google"
         ]
         soScraper = StackOverflowScraper()
-        # input_file = "C:\\Users\Jon\Desktop\JobJolt\Code\JobJolt\JobBard\jobboard\scrape_tests/stackoverflow.xml"
-        # print(input_file)
-        # soScraper.openFile(input_file)
-        # soScraper.scrape()
-
         for url in urls:
             print("Scraping: ", url)
             soScraper.openUrl(url)

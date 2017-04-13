@@ -1,6 +1,6 @@
-from django.core.management.base import BaseCommand,CommandError
 from JobScraping.TwitterScraper import TwitterScraper
-import os
+from django.core.management.base import BaseCommand
+
 
 class Command(BaseCommand):
     help = "Loads jobs from files into DB"
@@ -12,10 +12,6 @@ class Command(BaseCommand):
             urls.append(url + str(x*10))
 
         twitterScraper = TwitterScraper()
-        #input_file = "C:\\Users\Jon\Desktop\JobJolt\Code\JobJolt\JobBard\jobboard\scrape_tests/twitter.html"
-        #print(input_file)
-        #twitterScraper.openFile(input_file)
-        #twitterScraper.scrape()
 
         for u in urls:
            print("Scraping: " + u)

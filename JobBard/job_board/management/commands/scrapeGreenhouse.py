@@ -1,9 +1,10 @@
 # https://api.greenhouse.io/v1/boards/slack/jobs
-import time
-from django.core.management.base import BaseCommand,CommandError
-from JobScraping.GreenhouseScraper import GreenhouseScraper
 import random
-import os
+import time
+
+from JobScraping.GreenhouseScraper import GreenhouseScraper
+from django.core.management.base import BaseCommand
+
 
 class Command(BaseCommand):
     help = "Loads jobs from files into DB"
@@ -40,11 +41,6 @@ class Command(BaseCommand):
         ]
         random.shuffle(urls)
         ghScraper = GreenhouseScraper()
-        #input_file = "C:\\Users\Jon\Desktop\JobJolt\Code\JobJolt\JobBard\jobboard\scrape_tests/greenhouse-Fitbit.json"
-        #print(input_file)
-        #ghScraper.openFile(input_file)
-        #ghScraper.type = 'Fitbit'
-        #ghScraper.scrape()
 
         for url in urls:
             print("Scraping: " , url[0] , "for " , url[1])
