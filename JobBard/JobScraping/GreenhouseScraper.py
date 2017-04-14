@@ -2,6 +2,7 @@ from datetime import datetime
 
 from .JsonScraper import JsonScraper
 
+
 class GreenhouseScraper(JsonScraper):
     def __init__(self):
         self.type = "Greenhouse"

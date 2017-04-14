@@ -4,7 +4,7 @@ from .AbstractJobScraper import AbstractJobScraper
 
 class JsonScraper(AbstractJobScraper):
     def openUrl(self, url=None, header=None):
-        return AbstractJobScraper.openUrl(self, url=url, headers={'Accept': 'application/json'})
+        AbstractJobScraper.openUrl(self, url=url, headers={'Accept': 'application/json'})
 
     def getAllJobs(self):
         return self.soupObject[
