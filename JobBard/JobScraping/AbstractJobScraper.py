@@ -1,13 +1,12 @@
-from datetime import datetime
 import json
-
-from abc import ABC, abstractmethod
-from bs4 import BeautifulSoup
-
 import urllib.request
-from urllib.parse import urlencode
+from abc import ABC
+from datetime import datetime
 from urllib.error import HTTPError,URLError
+from urllib.parse import urlencode
+
 from JobScraping.JobImporter import JobImporter
+from bs4 import BeautifulSoup
 
 
 class AbstractJobScraper(ABC):
@@ -51,11 +50,15 @@ class AbstractJobScraper(ABC):
         else:
             self.loadScrapeObjectFromJson(page_content)
 
+    def getPageContent(self, url, request_headers, form_data):
+        page_content = urllib.request.urlopen(
+            urllib.request.Request(url, headers=request_headers, method=self.scrape_method, data=form_data))
+        return page_content
     def openUrl(self,url, headers={},form_data={}):
         request_headers = self.getHeaders(headers)
         try:
             form_data = urlencode(form_data).encode('utf-8')
-            page_content = urllib.request.urlopen(urllib.request.Request(url, headers=request_headers, method=self.scrape_method, data=form_data))
+            page_content = self.getPageContent(url, request_headers, form_data)
         except (URLError, HTTPError) as e:
             self.soupObject = BeautifulSoup("")
             return
