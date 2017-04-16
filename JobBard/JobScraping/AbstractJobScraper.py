@@ -7,6 +7,7 @@ from urllib.parse import urlencode
 
 from JobScraping.JobImporter import JobImporter
 from bs4 import BeautifulSoup
+from django.utils.html import strip_tags
 
 
 class AbstractJobScraper(ABC):
@@ -38,7 +39,7 @@ class AbstractJobScraper(ABC):
 
 
     def loadScrapeObjectFromString(self,page_content):
-        self.soupObject = BeautifulSoup(page_content.read(), self.scrape_format)
+        self.soupObject = BeautifulSoup(page_content, self.scrape_format)
 
     def loadScrapeObjectFromJson(self,page_content):
         content = page_content.read().decode('utf-8')
@@ -53,7 +54,7 @@ class AbstractJobScraper(ABC):
     def getPageContent(self, url, request_headers, form_data):
         page_content = urllib.request.urlopen(
             urllib.request.Request(url, headers=request_headers, method=self.scrape_method, data=form_data))
-        return page_content
+        return page_content.read()
     def openUrl(self,url, headers={},form_data={}):
         request_headers = self.getHeaders(headers)
         try:
@@ -136,7 +137,7 @@ class AbstractJobScraper(ABC):
         return self.extractFromEncoding(job.find(self.scrape_pattern["date_published"]))
 
     def extractFromEncoding(self, encoded):
-        return encoded.string if encoded != None else None
+        return strip_tags(encoded.string) if encoded != None else None
 
     def parseDate(self, dateString):
         return datetime.now()
