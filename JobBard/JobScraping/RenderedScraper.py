@@ -32,10 +32,19 @@ class RenderedScraper(AbstractJobScraper):
         if (self.web_driver_explicit_load_condition):
             self.waitUntilJSLoaded()
 
+    def preparePageForReading(self):
+        return
+
+    def pullContentFromPage(self):
+        page_content = self.web_driver.execute_script("return document.getElementsByTagName('html')[0].innerHTML")
+        return page_content
+
     # TODO: Edit Request headers and form data? It is highly unlikely this is needed.
-    def getPageContent(self, url, request_headers, form_data):
+    def getPageContent(self, url, request_headers, form_data, manual_close=False):
         self.initWebDriver()
         self.getPageAndWaitForLoad(url)
-        page_content = self.web_driver.execute_script("return document.getElementsByTagName('html')[0].innerHTML")
-        self.closeWebDriver()
+        self.preparePageForReading()
+        page_content = self.pullContentFromPage()
+        if (not manual_close):
+            self.closeWebDriver()
         return page_content

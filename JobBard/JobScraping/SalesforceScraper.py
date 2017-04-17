@@ -44,5 +44,8 @@ class SalesforceScraper(AbstractJobScraper):
         full_description = AbstractJobScraper.getJobDescription(self, job)
         return full_description.split('<br />')[1]
 
+    def extractFromEncoding(self, encoded):
+        return encoded.string if encoded != None else None
+
     def getCompany(self, job):
         return self.type

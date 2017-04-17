@@ -39,10 +39,13 @@ class AbstractJobScraper(ABC):
 
 
     def loadScrapeObjectFromString(self,page_content):
-        self.soupObject = BeautifulSoup(page_content, self.scrape_format)
+        if (self.scrape_format != "HTML"):
+            self.soupObject = BeautifulSoup(page_content, self.scrape_format)
+        else:
+            self.soupObject = BeautifulSoup(page_content)
 
     def loadScrapeObjectFromJson(self,page_content):
-        content = page_content.read().decode('utf-8')
+        content = page_content.decode('utf-8')
         self.soupObject = (json.loads(content))
 
     def loadScrapeObject(self,page_content):
