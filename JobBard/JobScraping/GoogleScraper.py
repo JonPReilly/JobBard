@@ -1,3 +1,4 @@
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
@@ -42,9 +43,18 @@ class GoogleScraper(RenderedScraper):
         return self.type
 
     def waitUntilJSLoaded(self):
-        WebDriverWait(self.web_driver, self.web_driver_timeout_seconds).until(
+        try:  # Is the 'next page' button visible?
+            WebDriverWait(self.web_driver, self.web_driver_timeout_seconds).until(
             expected_conditions.element_to_be_clickable((By.ID, "gjsrpn"))
-        )
+            )
+        except TimeoutException:
+            try:  # Is the 'no more results' text visible?
+                WebDriverWait(self.web_driver, self.web_driver_timeout_seconds).until(
+                    expected_conditions.element_to_be_clickable((By.ID, "cssnrft"))
+                )
+            except TimeoutException:
+                raise TimeoutException
+
 
     def getJobDescription(self, job):
         return ""
