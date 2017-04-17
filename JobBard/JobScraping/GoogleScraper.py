@@ -42,18 +42,21 @@ class GoogleScraper(RenderedScraper):
     def getCompany(self, job):
         return self.type
 
-    def waitUntilJSLoaded(self):
-        try:  # Is the 'next page' button visible?
-            WebDriverWait(self.web_driver, self.web_driver_timeout_seconds).until(
+    def waitUntilPagationExists(self):
+        WebDriverWait(self.web_driver, self.web_driver_timeout_seconds).until(
             expected_conditions.element_to_be_clickable((By.ID, "gjsrpn"))
-            )
+        )
+
+    def waitUntilLowVolumeSearchExists(self):
+        WebDriverWait(self.web_driver, self.web_driver_timeout_seconds).until(
+            expected_conditions.element_to_be_clickable((By.ID, "cssnrft"))
+        )
+
+    def waitUntilJSLoaded(self):
+        try:
+            self.waitUntilPagationExists()
         except TimeoutException:
-            try:  # Is the 'no more results' text visible?
-                WebDriverWait(self.web_driver, self.web_driver_timeout_seconds).until(
-                    expected_conditions.element_to_be_clickable((By.ID, "cssnrft"))
-                )
-            except TimeoutException:
-                raise TimeoutException
+            self.waitUntilLowVolumeSearchExists()
 
 
     def getJobDescription(self, job):
