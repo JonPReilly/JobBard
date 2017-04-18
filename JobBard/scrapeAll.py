@@ -14,7 +14,8 @@ def main():
         'scrapeMicrosoft',
         'scrapeSalesforce',
         'scrapeStackoveflow',
-        'scrapeTwitter'
+        'scrapeTwitter',
+        'scrapeIBM'
 
     ]
     random.shuffle(commands)

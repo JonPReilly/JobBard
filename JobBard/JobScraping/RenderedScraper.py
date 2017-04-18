@@ -25,9 +25,11 @@ class RenderedScraper(AbstractJobScraper):
             expected_conditions.element_to_be_clickable((By.ID, "gjsrpn"))
         )
 
+    def implicitlyWait(self):
+        self.web_driver.implicitly_wait(self.web_driver_timeout_seconds)
     def getPageAndWaitForLoad(self, url):
         if (not self.web_driver_explicit_load_condition):
-            self.web_driver.implicitly_wait(self.web_driver_timeout_seconds)
+            self.implicitlyWait()
         self.web_driver.get(url)
         if (self.web_driver_explicit_load_condition):
             self.waitUntilJSLoaded()

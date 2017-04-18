@@ -56,8 +56,10 @@ class GoogleScraper(RenderedScraper):
         try:
             self.waitUntilPagationExists()
         except TimeoutException:
-            self.waitUntilLowVolumeSearchExists()
-
+            try:
+                self.waitUntilLowVolumeSearchExists()
+            except TimeoutException:
+                self.implicitlyWait()
 
     def getJobDescription(self, job):
         return ""
