@@ -42,7 +42,8 @@ class MicrosoftScraper(RenderedScraper):
         self.loadScrapeObject(page_content)
 
     def prepareSearchPage(self):
-        KEYWORD_INPUT_SOFTWARE_JS = "$('#ContentPlaceHolder1_srSearch_search_txtKeywords').val('software')"
+        SEARCH_QUEREY = "software and not Product"
+        KEYWORD_INPUT_SOFTWARE_JS = "$('#ContentPlaceHolder1_srSearch_search_txtKeywords').val('" + SEARCH_QUEREY + "')"
         LOCATION_INPUT_US_JS = "$('#ContentPlaceHolder1_srSearch_search_msdRegion_txtMultiSelect').val('United States')"
         CLICK_SEARCH_BUTTON_JS = "$('#ContentPlaceHolder1_srSearch_search_btnSearch').click()"
 
