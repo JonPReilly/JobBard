@@ -56,7 +56,7 @@ class MicrosoftScraper(RenderedScraper):
         for command in js_commands:
             print("Executing: ", command)
             self.web_driver.execute_script(command)
-            time.sleep(1)
+            time.sleep(2)
 
         self.waitUntilResultsLoaded()
         self.web_driver.execute_script(SORT_BY_DATE_POSTED_JS)

@@ -13,13 +13,15 @@ def main():
         'scrapeLever',
         'scrapeMicrosoft',
         'scrapeSalesforce',
-        'scrapeStackoveflow',
+        'scrapeStackoverflow',
         'scrapeTwitter',
         'scrapeIBM',
-        'scrapeCisco'
+        'scrapeCisco',
+        'scrapeFacebook',
 
     ]
     random.shuffle(commands)
+    commands.append('printTodayStats')
     for arg in commands:
         sys.argv = [arg]
         print(arg, '...')

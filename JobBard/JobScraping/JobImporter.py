@@ -1,11 +1,13 @@
-from location.LocationManager import LocationManager
 from job_board.models import Job, Company
+from location.LocationManager import LocationManager
+
 
 class JobImporter:
     def addJob(self,company_name,title,url,location,description="",required_experience="",years_experience=None,posted_date=None):
         if (self.jobExists(url)):
             return #Do nothing for now. Update the job object in the future?
-
+        if (location == None):
+            location = "Unknown, Unknown"
         company_object = self.getCompanyObject(company_name)
         location_object =  self.getLocationObject(location)
 
