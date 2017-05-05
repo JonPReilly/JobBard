@@ -11,9 +11,22 @@ class JobKeyWordAdmin(admin.ModelAdmin):
     class Meta:
         model = JobKeyWord
 
+
+def applyToJob(modeladmin, request, queryset):
+    user = request.user
+    for job in queryset:
+        JobApplication.objects.create(
+            job = job,
+            user = user,
+
+        )
+
+    applyToJob.short_description = "Mark Job as Applied for user"
+
 class JobAdmin(admin.ModelAdmin):
     readonly_fields = ('date_created',)
     search_fields = ['company__name','title']
+    actions = [applyToJob]
     class Meta:
         model = Job
 
