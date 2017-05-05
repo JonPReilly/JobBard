@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db import IntegrityError
 
 from .models import Company, Job, JobKeyWord, JobApplication
 class CompanyAdmin(admin.ModelAdmin):
@@ -15,11 +16,14 @@ class JobKeyWordAdmin(admin.ModelAdmin):
 def applyToJob(modeladmin, request, queryset):
     user = request.user
     for job in queryset:
-        JobApplication.objects.create(
-            job = job,
-            user = user,
+        try:
+            JobApplication.objects.create(
+                job = job,
+                user = user,
 
-        )
+            )
+        except IntegrityError:
+            pass # The user already applied for this Job
 
     applyToJob.short_description = "Mark Job as Applied for user"
 
