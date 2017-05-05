@@ -15,7 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.conf.urls.static import static
+from django.conf import settings
+
+from job_board.views import index, job_search
+from job_board.admin_views import admin_dashboard
 
 urlpatterns = [
+    url(r'^$', index),
+    url(r'admin-dashboard/',admin_dashboard),
+    url(r'job-search/',job_search),
     url(r'^admin/', admin.site.urls),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
