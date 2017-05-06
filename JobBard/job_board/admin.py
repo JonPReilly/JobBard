@@ -1,9 +1,18 @@
 from django.contrib import admin
 from django.db import IntegrityError
 
-from .models import Company, Job, JobKeyWord, JobApplication
+from .models import Company, Job, JobKeyWord, JobApplication, UserStatistics
+
+def followCompany(modeladmin, request, queryset):
+    user = request.user
+    user_statistics, created = UserStatistics.objects.get_or_create(user=user)
+    print("User stats: " , user_statistics)
+    for company in queryset:
+        user_statistics.followed_companies.add(company)
+
 class CompanyAdmin(admin.ModelAdmin):
     search_fields = ['name']
+    actions = [followCompany]
     class Meta:
         model = Company
 
@@ -29,7 +38,7 @@ def applyToJob(modeladmin, request, queryset):
 
 class JobAdmin(admin.ModelAdmin):
     readonly_fields = ('date_created',)
-    search_fields = ['company__name','title']
+    search_fields = ['company__name','title', 'location__city__name','location__state__name']
     actions = [applyToJob]
     class Meta:
         model = Job
@@ -39,8 +48,12 @@ class JobApplicationAdmin(admin.ModelAdmin):
         model = JobApplication
 
 
+class UserStatisticsAdmin(admin.ModelAdmin):
+    class Meta:
+        model = UserStatistics
 
 admin.site.register(Job,JobAdmin)
 admin.site.register(Company,CompanyAdmin)
 admin.site.register(JobKeyWord,JobKeyWordAdmin)
 admin.site.register(JobApplication,JobApplicationAdmin)
+admin.site.register(UserStatistics,UserStatisticsAdmin)

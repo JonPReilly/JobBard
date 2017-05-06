@@ -10,6 +10,7 @@ class JobKeyWord(models.Model):
     def __str__(self):
         return self.word
 
+
 class Company(models.Model):
     name = models.CharField(max_length=100, unique=True)
     def __str__(self):
@@ -64,3 +65,10 @@ class JobApplication(models.Model):
 
     class Meta:
         unique_together = ['job', 'user']
+
+class UserStatistics(models.Model):
+    user = models.OneToOneField(User)
+    followed_companies = models.ManyToManyField(Company, blank=True)
+
+    def __str__(self):
+        return self.user.__str__()
