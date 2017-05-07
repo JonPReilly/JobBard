@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime, timedelta
 from location.models import Location
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 
@@ -67,8 +68,20 @@ class JobApplication(models.Model):
         unique_together = ['job', 'user']
 
 class UserStatistics(models.Model):
+    DEFAULT_APPLICATION_STALE_TIME_DAYS = 60 #Job applications not updated in 60 days are considered 'stale' and go into the graveyard.
+    MAX_APPLICATION_STALE_TIME_DAYS = 365
+    MIN_APPLICATION_STALE_TIME_DAYS = 1
+
     user = models.OneToOneField(User)
     followed_companies = models.ManyToManyField(Company, blank=True)
+    recently_viewed_jobs = models.ManyToManyField(Job, blank=True)
+    days_before_application_stale = models.PositiveSmallIntegerField(default=DEFAULT_APPLICATION_STALE_TIME_DAYS,validators=[MinValueValidator(MIN_APPLICATION_STALE_TIME_DAYS),
+                                       MaxValueValidator(MAX_APPLICATION_STALE_TIME_DAYS)])
+
+    def getApplications(self):
+        return JobApplication.objects.filter(user=self.user)
+    def getNumApplications(self):
+        return self.getApplications().count() #Lazy evaluated
 
     def __str__(self):
         return self.user.__str__()
