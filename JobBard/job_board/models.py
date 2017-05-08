@@ -56,7 +56,7 @@ class JobApplication(models.Model):
     date_applied = models.DateTimeField(auto_now=True)
     date_updated = models.DateTimeField(auto_now=True)
     application_notes = models.TextField(max_length=1000,blank=True)
-    interview_time = models.DateTimeField(null=True)
+    interview_time = models.DateTimeField(null=True,blank=True)
     application_status = models.CharField(
         max_length=2,
         choices = APPLICATION_STATUS,
