@@ -55,6 +55,8 @@ class JobApplication(models.Model):
     user = models.ForeignKey(User)
     date_applied = models.DateTimeField(auto_now=True)
     date_updated = models.DateTimeField(auto_now=True)
+    application_notes = models.TextField(max_length=1000,blank=True)
+    interview_time = models.DateTimeField(null=True)
     application_status = models.CharField(
         max_length=2,
         choices = APPLICATION_STATUS,
@@ -72,11 +74,17 @@ class UserStatistics(models.Model):
     MAX_APPLICATION_STALE_TIME_DAYS = 365
     MIN_APPLICATION_STALE_TIME_DAYS = 1
 
+    DEFAULT_NOTIFY_DAYS_BEFORE_INTERVIEW = 1
+    MAX_NOTIFY_DAYS_BEFORE_INTERVIEW = 30
+    MIN_NOTIFY_DAYS_BEFORE_INTERVIEW = 0
+
     user = models.OneToOneField(User)
     followed_companies = models.ManyToManyField(Company, blank=True)
     recently_viewed_jobs = models.ManyToManyField(Job, blank=True)
     days_before_application_stale = models.PositiveSmallIntegerField(default=DEFAULT_APPLICATION_STALE_TIME_DAYS,validators=[MinValueValidator(MIN_APPLICATION_STALE_TIME_DAYS),
                                        MaxValueValidator(MAX_APPLICATION_STALE_TIME_DAYS)])
+    days_before_interview_notification = models.PositiveSmallIntegerField(default=DEFAULT_NOTIFY_DAYS_BEFORE_INTERVIEW,validators=[MinValueValidator(MIN_NOTIFY_DAYS_BEFORE_INTERVIEW),
+                                       MaxValueValidator(MAX_NOTIFY_DAYS_BEFORE_INTERVIEW)])
 
     def getApplications(self):
         return JobApplication.objects.filter(user=self.user)
