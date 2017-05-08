@@ -69,7 +69,7 @@ class JobApplication(models.Model):
     class Meta:
         unique_together = ['job', 'user']
 
-class UserStatistics(models.Model):
+class UserSettings(models.Model):
     DEFAULT_APPLICATION_STALE_TIME_DAYS = 60 #Job applications not updated in 60 days are considered 'stale' and go into the graveyard.
     MAX_APPLICATION_STALE_TIME_DAYS = 365
     MIN_APPLICATION_STALE_TIME_DAYS = 1
