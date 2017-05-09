@@ -35,7 +35,7 @@ class Job(models.Model):
     keywords = models.ManyToManyField(JobKeyWord,blank=True)
 
     def __str__(self):
-        return self.company.__str__() + " - " + self.title.__str__()
+        return self.company.__str__() + " - " + self.title.__str__() + "\t(" + self.location.__str__() + ")"
 
 class JobApplication(models.Model):
     APPLICATION_STATUS = (
