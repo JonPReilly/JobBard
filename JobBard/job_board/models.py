@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from location.models import Location
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.formats import date_format
 
 
 
@@ -64,7 +65,7 @@ class JobApplication(models.Model):
     )
 
     def __str__(self):
-        return "{0}\t: [{1}]\t ({2})".format(self.user,self.job,self.date_applied)
+        return "{0}\t: [{1}]\t ({2}) - {3}".format(self.user,self.job,self.application_status,date_format(self.date_applied, format='SHORT_DATETIME_FORMAT'))
 
     class Meta:
         unique_together = ['job', 'user']
