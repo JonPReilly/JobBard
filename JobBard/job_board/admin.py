@@ -37,13 +37,14 @@ def applyToJob(modeladmin, request, queryset):
     applyToJob.short_description = "Mark Job as Applied for user"
 
 class JobAdmin(admin.ModelAdmin):
-    readonly_fields = ('date_created',)
+    readonly_fields = ('date_created','company','location')
     search_fields = ['company__name','title', 'location__city__name','location__state__name']
     actions = [applyToJob]
     class Meta:
         model = Job
 
 class JobApplicationAdmin(admin.ModelAdmin):
+    readonly_fields = ('job',)
     class Meta:
         model = JobApplication
 
