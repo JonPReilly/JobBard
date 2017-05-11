@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = "Sets Job Applications that have expired to the graveyard status"
 
     def handle(self, *args, **options):
-        all_user_settings = UserSettings.objects.all()
+        all_user_settings = UserSettings.objects.all().prefetch_related('user')
 
         for user_setting in all_user_settings:
             APPLICATION_CATAGORIES = ['AP', 'RJ','CC','PI','OI','NI']
