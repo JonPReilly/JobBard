@@ -94,3 +94,10 @@ class UserSettings(models.Model):
 
     def __str__(self):
         return self.user.__str__()
+
+
+class Notification(models.Model):
+    text = models.TextField(max_length=250)
+    user = models.ForeignKey(User)
+    viewed = models.NullBooleanField()
+    date_created = models.DateTimeField(auto_now=True)

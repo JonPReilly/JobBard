@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import IntegrityError
 
-from .models import Company, Job, JobKeyWord, JobApplication, UserSettings
+from .models import Company, Job, JobKeyWord, JobApplication, UserSettings, Notification
 
 def followCompany(modeladmin, request, queryset):
     user = request.user
@@ -53,8 +53,14 @@ class UserStatisticsAdmin(admin.ModelAdmin):
     class Meta:
         model = UserSettings
 
+class NotificationAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Notification
+
+
 admin.site.register(Job,JobAdmin)
 admin.site.register(Company,CompanyAdmin)
 admin.site.register(JobKeyWord,JobKeyWordAdmin)
 admin.site.register(JobApplication,JobApplicationAdmin)
 admin.site.register(UserSettings,UserStatisticsAdmin)
+admin.site.register(Notification,NotificationAdmin)
