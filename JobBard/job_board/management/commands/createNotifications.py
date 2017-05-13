@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import  timedelta
 from job_board.models import JobApplication, UserSettings, Notification
+from django.utils.formats import date_format
+
 
 
 class Command(BaseCommand):
@@ -22,6 +24,6 @@ class Command(BaseCommand):
                 Notification.objects.create(
                     user = user,
                     viewed = False,
-                    text = "Interview with " + str(application.job.company) + " for " + str(application.job.title) + " on " + str(application.interview_time)
+                    text = "Interview with " + str(application.job.company) + " for " + str(application.job.title) + " on " + date_format(application.interview_time, format='SHORT_DATETIME_FORMAT')
                 )
             applications_to_notify.update(notification_created=True)

@@ -100,5 +100,8 @@ class UserSettings(models.Model):
 class Notification(models.Model):
     text = models.TextField(max_length=250)
     user = models.ForeignKey(User)
-    viewed = models.NullBooleanField()
+    viewed = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.user) + "\t<Seen:" + str(self.viewed) + ">\t: " + self.text
