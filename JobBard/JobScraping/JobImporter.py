@@ -8,7 +8,7 @@ class JobImporter:
             return #Do nothing for now. Update the job object in the future?
         if (location == None):
             location = "Unknown, Unknown"
-        company_object = self.getCompanyObject(company_name)
+        company_object = self.getCompanyObject(company_name.title())
         location_object =  self.getLocationObject(location)
 
         Job.objects.get_or_create(
