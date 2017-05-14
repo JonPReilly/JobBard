@@ -38,9 +38,9 @@ class JobImporter:
         if (location_string == None):
             return None
         loc = location_string.split(",")
-        city = loc[0].replace(" ", "")
+        city = loc[0].replace(" ", "").title()
         try:
-            state = loc[1].replace(" ", "")
+            state = loc[1].replace(" ", "").title()
         except IndexError:
             state = ""
 
