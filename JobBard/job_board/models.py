@@ -15,6 +15,12 @@ class JobKeyWord(models.Model):
 
 class Company(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.title()
+        super(Company, self).save(*args,**kwargs)
+
+
     def __str__(self):
         return self.name
 
@@ -113,7 +119,7 @@ class Notification(models.Model):
             email_user = user_settings.enable_email_notifications
             if(email_user):
                 notifyUserViaEmail(self.user, self.text)
-
         super(Notification, self).save(*args,**kwargs)
+
     def __str__(self):
         return str(self.user) + "\t<Seen:" + str(self.viewed) + ">\t: " + self.text
