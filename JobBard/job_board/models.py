@@ -54,7 +54,7 @@ class JobApplication(models.Model):
 
     job = models.ForeignKey(Job)
     user = models.ForeignKey(User)
-    date_applied = models.DateTimeField(auto_now=True)
+    date_applied = models.DateTimeField(default=datetime.now())
     date_updated = models.DateTimeField(auto_now=True)
     application_notes = models.TextField(max_length=1000,blank=True)
     interview_time = models.DateTimeField(null=True,blank=True)
@@ -87,7 +87,7 @@ class UserSettings(models.Model):
                                        MaxValueValidator(MAX_APPLICATION_STALE_TIME_DAYS)])
     days_before_interview_notification = models.PositiveSmallIntegerField(default=DEFAULT_NOTIFY_DAYS_BEFORE_INTERVIEW,validators=[MinValueValidator(MIN_NOTIFY_DAYS_BEFORE_INTERVIEW),
                                        MaxValueValidator(MAX_NOTIFY_DAYS_BEFORE_INTERVIEW)])
-
+    enable_email_notifications = models.BooleanField(default=False)
     def getApplications(self):
         return JobApplication.objects.filter(user=self.user)
     def getNumApplications(self):
@@ -97,11 +97,23 @@ class UserSettings(models.Model):
         return self.user.__str__()
 
 
+def notifyUserViaEmail(user, text):
+    pass
 class Notification(models.Model):
     text = models.TextField(max_length=250)
     user = models.ForeignKey(User)
-    viewed = models.BooleanField(default=False)
+    viewed = models.NullBooleanField() # True: Notification Viewed, False: Viewed in past, but set to not viewed (don't notify again)
+                                       # None: Not viewed
     date_created = models.DateTimeField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+
+        if (self.viewed == None):
+            user_settings = UserSettings.objects.only('enable_email_notifications').get(user=self.user)
+            email_user = user_settings.enable_email_notifications
+            if(email_user):
+                notifyUserViaEmail(self.user, self.text)
+
+        super(Notification, self).save(*args,**kwargs)
     def __str__(self):
         return str(self.user) + "\t<Seen:" + str(self.viewed) + ">\t: " + self.text
