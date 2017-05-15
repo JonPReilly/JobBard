@@ -18,3 +18,7 @@ class JobSearcher:
         today = datetime.today()
         t = today.replace(hour=0, minute=0, second=0)
         return Job.objects.filter(date_created__gte=t).order_by('-date_created')
+
+    
+    def getJobsFromCompany(self, company_quereyset):
+        return Job.objects.filter(company__in = company_quereyset)
