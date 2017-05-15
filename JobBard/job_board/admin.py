@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db import IntegrityError
+from django.utils.safestring import mark_safe
 
 from .models import Company, Job, JobKeyWord, JobApplication, UserSettings, Notification
 
@@ -44,7 +45,10 @@ class JobAdmin(admin.ModelAdmin):
         model = Job
 
 class JobApplicationAdmin(admin.ModelAdmin):
-    readonly_fields = ('job',)
+    readonly_fields = ('job','job_url')
+
+    def job_url(self,object):
+        return mark_safe('<a href="{0}">{0}</a>'.format(object.job.url))
     class Meta:
         model = JobApplication
 
