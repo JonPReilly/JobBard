@@ -123,3 +123,16 @@ class Notification(models.Model):
 
     def __str__(self):
         return str(self.user) + "\t<Seen:" + str(self.viewed) + ">\t: " + self.text
+
+
+class Contact(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50, blank=True)
+    company = models.ForeignKey(Company, blank=True)
+    notes = models.TextField(max_length=500,blank=True)
+
+    email = models.EmailField(blank=True)
+    linkedin = models.URLField(blank=True)
+
+    def __str__(self):
+        return "{0} {1} - {2}".format(self.first_name,self.last_name,self.company.name)

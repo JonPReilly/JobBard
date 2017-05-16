@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import IntegrityError
 from django.utils.safestring import mark_safe
 
-from .models import Company, Job, JobKeyWord, JobApplication, UserSettings, Notification
+from .models import Company, Job, JobKeyWord, JobApplication, UserSettings, Notification, Contact
 
 def followCompany(modeladmin, request, queryset):
     user = request.user
@@ -70,6 +70,10 @@ class NotificationAdmin(admin.ModelAdmin):
     class Meta:
         model = Notification
 
+class ContactAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Contact
+
 
 admin.site.register(Job,JobAdmin)
 admin.site.register(Company,CompanyAdmin)
@@ -77,3 +81,4 @@ admin.site.register(JobKeyWord,JobKeyWordAdmin)
 admin.site.register(JobApplication,JobApplicationAdmin)
 admin.site.register(UserSettings,UserStatisticsAdmin)
 admin.site.register(Notification,NotificationAdmin)
+admin.site.register(Contact,ContactAdmin)
