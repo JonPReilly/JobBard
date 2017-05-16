@@ -7,6 +7,9 @@ from django.utils.formats import date_format
 
 
 
+
+
+
 class JobKeyWord(models.Model):
     word = models.CharField(unique=True,max_length=25)
     def __str__(self):
@@ -23,6 +26,21 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Contact(models.Model):
+    created_by = models.ForeignKey(User)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50, blank=True)
+    company = models.ForeignKey(Company, blank=True)
+    notes = models.TextField(max_length=500,blank=True)
+
+    email = models.EmailField(blank=True)
+    linkedin = models.URLField(blank=True)
+
+    def __str__(self):
+        return "{0} {1} - {2}".format(self.first_name,self.last_name,self.company.name)
+
 
 class Job(models.Model):
 
@@ -65,6 +83,8 @@ class JobApplication(models.Model):
     application_notes = models.TextField(max_length=1000,blank=True)
     interview_time = models.DateTimeField(null=True,blank=True)
     notification_created = models.BooleanField(default=False)
+
+    company_contacts = models.ManyToManyField(Contact,blank=True)
     application_status = models.CharField(
         max_length=2,
         choices = APPLICATION_STATUS,
@@ -125,14 +145,3 @@ class Notification(models.Model):
         return str(self.user) + "\t<Seen:" + str(self.viewed) + ">\t: " + self.text
 
 
-class Contact(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50, blank=True)
-    company = models.ForeignKey(Company, blank=True)
-    notes = models.TextField(max_length=500,blank=True)
-
-    email = models.EmailField(blank=True)
-    linkedin = models.URLField(blank=True)
-
-    def __str__(self):
-        return "{0} {1} - {2}".format(self.first_name,self.last_name,self.company.name)
