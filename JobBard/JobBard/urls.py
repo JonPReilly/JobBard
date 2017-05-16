@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
-from job_board.views import index, job_search
+from job_board.views import index, job_search, job_apply
 from job_board.admin_views import admin_dashboard
 
 urlpatterns = [
@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'admin-dashboard/',admin_dashboard),
     url(r'job-search/',job_search),
     url(r'^admin/', admin.site.urls),
+    url(r'^job-apply/(?P<jobID>[0-9]+)/$', job_apply),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
