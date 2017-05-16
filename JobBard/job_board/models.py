@@ -114,6 +114,65 @@ class UserSettings(models.Model):
     days_before_interview_notification = models.PositiveSmallIntegerField(default=DEFAULT_NOTIFY_DAYS_BEFORE_INTERVIEW,validators=[MinValueValidator(MIN_NOTIFY_DAYS_BEFORE_INTERVIEW),
                                        MaxValueValidator(MAX_NOTIFY_DAYS_BEFORE_INTERVIEW)])
     enable_email_notifications = models.BooleanField(default=False)
+
+    #----------------
+    # These fields will be used in connection with a browser add-on to automatically attempt to filld out application forms on websites
+    GENDER_CHOICES = (
+        ('M','Male'),
+        ('F','Female'),
+        ('D','Decline to Self Identify')
+    )
+    RACE_CHOICES = (
+        ('I','American Indian or Alaskan Native'),
+        ('A','Asian'),
+        ('B','Black or African American'),
+        ('H','Hispanic or Latino'),
+        ('W','White'),
+        ('P','Native Hawaiian or Other Pacific Islander'),
+        ('+','Two or More Races'),
+        ('D', 'Decline to Self Identify')
+    )
+    VETERAN_CHOICES = (
+        ('N','I am not a protected veteran'),
+        ('Y','I am one or more classifications of a protected veteran'),
+        ('D', 'I don\'t wish to answer')
+    )
+    DISABILITY_CHOICES = (
+        ('N','I do not have a disability'),
+        ('Y', 'I have or have had a disability'),
+        ('D','I don\tt wish to answer')
+    )
+
+    application_first_name = models.CharField(max_length=40,blank=True)
+    application_last_name = models.CharField(max_length=40,blank=True)
+    application_email = models.EmailField(blank=True)
+    application_city = models.CharField(max_length=40,blank=True)
+    application_state = models.CharField(max_length=40,blank=True)
+    application_linkedin = models.URLField(blank=True)
+    application_github =models.URLField(blank=True)
+    application_gender = models.CharField(
+        max_length=1,
+        choices=GENDER_CHOICES,
+        blank=True
+    )
+    application_race = models.CharField(
+        max_length=1,
+        choices=RACE_CHOICES,
+        blank=True
+    )
+    application_veteran_status = models.CharField(
+        max_length=1,
+        choices=VETERAN_CHOICES,
+        blank=True
+    )
+    application_disability_status = models.CharField(
+        max_length=1,
+        choices=DISABILITY_CHOICES,
+        blank=True
+    )
+
+
+    #----------------
     def getApplications(self):
         return JobApplication.objects.filter(user=self.user)
     def getNumApplications(self):

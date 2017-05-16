@@ -62,7 +62,8 @@ class JobApplicationAdmin(admin.ModelAdmin):
         model = JobApplication
 
 
-class UserStatisticsAdmin(admin.ModelAdmin):
+class UserSettingsAdmin(admin.ModelAdmin):
+    raw_id_fields = ['followed_companies','recently_viewed_jobs']
     class Meta:
         model = UserSettings
 
@@ -79,6 +80,6 @@ admin.site.register(Job,JobAdmin)
 admin.site.register(Company,CompanyAdmin)
 admin.site.register(JobKeyWord,JobKeyWordAdmin)
 admin.site.register(JobApplication,JobApplicationAdmin)
-admin.site.register(UserSettings,UserStatisticsAdmin)
+admin.site.register(UserSettings,UserSettingsAdmin)
 admin.site.register(Notification,NotificationAdmin)
 admin.site.register(Contact,ContactAdmin)
