@@ -11,6 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         urls = [
+            ("https://api.greenhouse.io/v1/boards/github/jobs", 'Github'),
             ("https://api.greenhouse.io/v1/boards/lookout/jobs", 'Lookout'),
             ("https://api.greenhouse.io/v1/boards/digitalocean98/jobs", 'DigitalOcean'),
             ("https://api.greenhouse.io/v1/boards/tripadvisor/jobs", 'TripAdvisor'),
