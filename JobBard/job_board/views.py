@@ -3,14 +3,28 @@ from django.http import JsonResponse
 
 from job_board.models import Job, JobApplication, Notification
 
+def getUserNotifications(user):
+    return Notification.objects.filter(user=user)
+
+def getBaseTemplateVariables(request):
+    if (not request.user.is_authenticated):
+        return {}
+    base_variables = {}
+    base_variables['notifications'] = getUserNotifications(request.user)
+    return base_variables
+
+def renderWithBaseVariables(request, template):
+    base_variables = getBaseTemplateVariables(request)
+    return render(request, template, base_variables)
+
 def index(request):
     if(request.user.is_authenticated):
-        return render(request,'index.html')
+        return renderWithBaseVariables(request,'index.html')
 
     return job_search(request)
 
 def job_search(request):
-    return render(request, "job-search.html")
+    return renderWithBaseVariables(request, "job-search.html")
 
 def createJobApplication(user,job):
     _, created = JobApplication.objects.get_or_create(
@@ -25,6 +39,7 @@ def notifyUserOfJobApplication(user,job):
     notification_text = "You applied to the position " + job.title + " at " + job.company.name
     Notification.objects.get_or_create(
         user= user,
+        title = job.company.name,
         text= notification_text
     )
 def job_apply(request,jobID = None):

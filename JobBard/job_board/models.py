@@ -185,6 +185,7 @@ class UserSettings(models.Model):
 def notifyUserViaEmail(user, text):
     pass
 class Notification(models.Model):
+    title = models.CharField(max_length=40)
     text = models.TextField(max_length=250)
     user = models.ForeignKey(User)
     viewed = models.NullBooleanField() # True: Notification Viewed, False: Viewed in past, but set to not viewed (don't notify again)

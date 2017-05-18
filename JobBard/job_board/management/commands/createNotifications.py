@@ -23,6 +23,7 @@ class Command(BaseCommand):
             for application in applications_to_notify:
                 Notification.objects.create(
                     user = user,
+                    title = str(application.job.company),
                     viewed = False,
                     text = "Interview with " + str(application.job.company) + " for " + str(application.job.title) + " on " + date_format(application.interview_time, format='SHORT_DATETIME_FORMAT')
                 )
