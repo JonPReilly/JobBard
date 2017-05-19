@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "JobBard",
+  "description": "Auto fills job applications forms, and tracks them via JobBard",
+  "version": "0.1",
+
+ "content_scripts": [
+    {
+      "matches" : [
+        "http://*/*",
+        "https://*/*" // For debug. In reality we will track a finite amount of sites
+      ],
+      "js": ["job_filler.js"],
+      "run_at": "document_end"
+    }
+  ]
+
+}
