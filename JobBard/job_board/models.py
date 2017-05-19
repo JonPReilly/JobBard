@@ -115,6 +115,8 @@ class UserSettings(models.Model):
                                        MaxValueValidator(MAX_NOTIFY_DAYS_BEFORE_INTERVIEW)])
     enable_email_notifications = models.BooleanField(default=False)
 
+    date_updated = models.DateTimeField(auto_now=True)
+
     #----------------
     # These fields will be used in connection with a browser add-on to automatically attempt to filld out application forms on websites
     GENDER_CHOICES = (
