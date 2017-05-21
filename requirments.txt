@@ -1,6 +1,9 @@
 beautifulsoup4==4.5.3
 Django==1.11
+django-filter==1.0.4
+djangorestframework==3.6.3
 lxml==3.7.3
+Markdown==2.6.8
 pytz==2017.2
 selenium==3.3.3
 uszipcode==0.1.3
