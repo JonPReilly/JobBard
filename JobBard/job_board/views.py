@@ -37,11 +37,13 @@ def createJobApplication(user,job):
 def notifyUserOfJobApplication(user,job):
 
     notification_text = "You applied to the position " + job.title + " at " + job.company.name
-    Notification.objects.get_or_create(
+    _, created = Notification.objects.get_or_create(
         user= user,
         title = job.company.name,
         text= notification_text
     )
+
+    return created
 def job_apply(request,jobID = None):
     if (jobID == None or not request.user.is_authenticated):
         return JsonResponse({'applied': False})
