@@ -34,7 +34,7 @@ class Command(BaseCommand):
             ("https://api.greenhouse.io/v1/boards/nerdwallet/jobs", 'Nerdwallet'),
             ("https://api.greenhouse.io/v1/boards/buzzfeed/jobs", 'Buzzfeed'),
             ("https://api.greenhouse.io/v1/boards/thumbtack/jobs", 'Thumbtack'),
-            ("https://api.greenhouse.io/v1/boards/uber/jobs", 'Uber'),
+            #("https://api.greenhouse.io/v1/boards/uber/jobs", 'Uber'),
 
 
 

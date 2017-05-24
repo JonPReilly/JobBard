@@ -144,7 +144,7 @@ class UserSettings(models.Model):
         ('Y', 'I have or have had a disability'),
         ('D','I don\tt wish to answer')
     )
-
+    application_street_address = models.CharField(max_length=150,blank=True)
     application_first_name = models.CharField(max_length=40,blank=True)
     application_last_name = models.CharField(max_length=40,blank=True)
     application_email = models.EmailField(blank=True)

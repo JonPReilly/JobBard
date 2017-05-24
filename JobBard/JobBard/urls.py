@@ -20,6 +20,8 @@ from django.conf import settings
 
 from job_board.views import index, job_search, job_apply
 from job_board.admin_views import admin_dashboard
+from job_board.api import getApplicationFormInfo
+
 
 urlpatterns = [
     url(r'^$', index),
@@ -27,4 +29,5 @@ urlpatterns = [
     url(r'job-search/',job_search),
     url(r'^admin/', admin.site.urls),
     url(r'^job-apply/(?P<jobID>[0-9]+)/$', job_apply),
+    url(r'^api/jobform', getApplicationFormInfo),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

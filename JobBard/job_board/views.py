@@ -56,3 +56,5 @@ def job_apply(request,jobID = None):
 
 
     return JsonResponse({'applied': True})
+
+
