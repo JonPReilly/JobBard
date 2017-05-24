@@ -4,11 +4,7 @@ from location.models import Location
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.formats import date_format
-
-
-
-
-
+from django.core.validators import RegexValidator
 
 class JobKeyWord(models.Model):
     word = models.CharField(unique=True,max_length=25)
@@ -37,6 +33,10 @@ class Contact(models.Model):
 
     email = models.EmailField(blank=True)
     linkedin = models.URLField(blank=True)
+
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
+                                 message="Phone number must be entered in the format: '+XXXXXXXXXX'. Up to 15 digits allowed.")
+    phone_number = models.CharField(validators=[phone_regex], max_length=16, blank=True)
 
     def __str__(self):
         return "{0} {1} - {2}".format(self.first_name,self.last_name,self.company.name)
