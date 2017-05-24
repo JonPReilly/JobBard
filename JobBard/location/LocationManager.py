@@ -26,7 +26,7 @@ class LocationManager:
             city_true_name = location_object.City or city
             state_true_name = location_object.State or state
             city_model, city_created = City.objects.get_or_create(name=city_true_name, zip_code=zip_code)
-            state_model, state_created = State.objects.get_or_create(name=state_true_name)
+            state_model, state_created = State.objects.get_or_create(name=state_true_name.title())
             location_model, location_created = Location.objects.get_or_create(city=city_model,state=state_model)
         except ValueError:
             city_model, city_created = City.objects.get_or_create(name=city, zip_code="Invalid")
