@@ -10,7 +10,7 @@ def getBaseTemplateVariables(request):
     if (not request.user.is_authenticated):
         return {}
     base_variables = {}
-    base_variables['notifications'] = getUserNotifications(request.user)
+    base_variables['notifications'] = getUserNotifications(request.user).order_by('-date_created')
     return base_variables
 
 def renderWithBaseVariables(request, template):
