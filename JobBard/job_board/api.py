@@ -26,6 +26,19 @@ def getApplicationFormInfo(request):
         'veteran_status' : settings.application_veteran_status,
         'street_address' : settings.application_street_address,
         'disability_status' : settings.application_disability_status,
-        'phone_number' : settings.application_phone_number
+        'phone_number' : settings.application_phone_number,
+
+        'education' : {
+            'school' : settings.application_education_school,
+            'concentration' : settings.application_education_concentration,
+            'start_date' : settings.application_education_start,
+            'end_date' : settings.application_education_end,
+            'degree' : settings.application_education_degree
+        },
+
+        'authorization' : {
+            'work_in_us' : settings.application_us_authorized,
+            'require_visa' : settings.application_require_visa
+        }
     }
     return JsonResponse(user_application_settings)

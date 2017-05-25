@@ -144,6 +144,11 @@ class UserSettings(models.Model):
         ('Y', 'I have or have had a disability'),
         ('D','I don\tt wish to answer')
     )
+    DEGREE_TYPE = (
+        ('B', 'Bachelors'),
+        ('M', 'Masters'),
+        ('P', 'PHD')
+    )
     application_street_address = models.CharField(max_length=150,blank=True)
     application_first_name = models.CharField(max_length=40,blank=True)
     application_last_name = models.CharField(max_length=40,blank=True)
@@ -162,6 +167,7 @@ class UserSettings(models.Model):
         choices=RACE_CHOICES,
         blank=True
     )
+    application_hispanic = models.NullBooleanField
     application_veteran_status = models.CharField(
         max_length=1,
         choices=VETERAN_CHOICES,
@@ -176,6 +182,17 @@ class UserSettings(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message="Phone number must be entered in the format: '+XXXXXXXXXX'. Up to 15 digits allowed.")
     application_phone_number = models.CharField(validators=[phone_regex], max_length=16, blank=True)
+    application_education_school = models.CharField(max_length=50, blank=True)
+    application_education_start = models.DateField(blank=True, null=True)
+    application_education_end = models.DateField(blank=True, null=True)
+    application_education_concentration = models.CharField(max_length=50, blank=True)
+    application_education_degree = models.CharField(
+        max_length=1,
+        choices=DEGREE_TYPE,
+        blank=True
+    )
+    application_us_authorized = models.NullBooleanField(default=None)
+    application_require_visa = models.NullBooleanField(default=None)
 
 
     #----------------
