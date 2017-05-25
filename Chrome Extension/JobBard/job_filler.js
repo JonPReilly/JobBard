@@ -1,11 +1,11 @@
-function ajaxRequest(request_type, request_url, request_data)
+function ajaxRequest(request_type, request_url, request_data, successFunction)
 {
     var r = new XMLHttpRequest();
     r.open(request_type, request_url, true);
     r.onreadystatechange = function () {
     if (r.readyState != 4 || r.status != 200) return "Error";
 
-        ajaxSuccess(r.responseText);
+        successFunction(r.responseText);
 
     };
 
@@ -18,14 +18,23 @@ function ajaxSuccess(response)
     console.log(response);
 }
 
+var page_info = {
 
-function getPageInformation()
+    "www.facebook.com" : {
+        "first_name" : {"type" : "input", "identifier" : {"attr": "placeholder", "val" : "Full Name"}},
+    }
+
+}
+
+function getPageInformation(url)
 {
-    var page_info = {
-        "first_name" : {"type" : "input", "identifier" : {"attr": "id", "val" : "inputSuccess2"}},
-        "last_name" : {"type" : "input", "identifier" : {"attr": "id", "val" : "inputSuccess3"}}
-    };
-    return page_info;
+    if (url in page_info)
+    {
+        console.log("in");
+        return page_info[url];
+    }
+    console.log("Not in ");
+    return {};
 }
 
 function getUserInformation()
@@ -33,6 +42,14 @@ function getUserInformation()
     return {"first_name" : "Jonathan", "last_name" : "Reilly"};
 }
 
+function handleInputField(input_obj, val)
+{
+    console.log("Handling input");
+    console.log(val);
+    console.log(input_obj);
+    if (input_obj && val &&  input_obj.type !== "hidden" && ( input_obj.value = val ))
+            input_obj.style.backgroundColor = "hsla(180, 100%, 50%, 0.15)";
+}
 function fillForm(page_info, user_info)
 {
     Object.keys( page_info ).forEach(function( field ){
@@ -42,21 +59,24 @@ function fillForm(page_info, user_info)
         var selector = "form " + field_type + "[" +identifier_key +"= '" + identifier_val + "']";
         var input = document.querySelector(selector);
 
+        handleInputField(input, user_info[field]);
 
-        if (input && user_info[ field ] &&  input.type !== "hidden" && ( input.value = user_info[ field ] ))
-            input.style.backgroundColor = "hsla(180, 100%, 50%, 0.15)";
 
 
     });
 }
+
+function onUserInfoRecieved(user_info)
+{
+    var page_info = getPageInformation(window.location.hostname);
+    if (page_info == {}) return;
+    if (user_info == {}) return;
+    user_info = JSON.parse(user_info);
+    fillForm(page_info, user_info);
+}
 function fillUserJobForm()
 {
-    var page_info = getPageInformation();
-    if (page_info == {}) return;
-    var user_info = getUserInformation();
-    if (user_info == {}) return;
-
-    fillForm(page_info, user_info);
+    ajaxRequest("GET", "http://127.0.0.1:8000/api/jobform", "", onUserInfoRecieved)
 }
 
 
