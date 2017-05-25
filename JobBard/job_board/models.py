@@ -173,6 +173,10 @@ class UserSettings(models.Model):
         blank=True
     )
 
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
+                                 message="Phone number must be entered in the format: '+XXXXXXXXXX'. Up to 15 digits allowed.")
+    application_phone_number = models.CharField(validators=[phone_regex], max_length=16, blank=True)
+
 
     #----------------
     def getApplications(self):

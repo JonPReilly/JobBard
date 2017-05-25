@@ -22,6 +22,8 @@ var page_info = {
 
     "www.facebook.com" : {
         "first_name" : {"type" : "input", "identifier" : {"attr": "placeholder", "val" : "Full Name"}},
+        "email" : {"type" : "input", "identifier" : {"attr": "placeholder", "val" : "Email Address"}},
+        "phone_number" : {"type" : "input", "identifier" : {"attr": "placeholder", "val" : "Phone"}},
     }
 
 }
@@ -30,10 +32,8 @@ function getPageInformation(url)
 {
     if (url in page_info)
     {
-        console.log("in");
         return page_info[url];
     }
-    console.log("Not in ");
     return {};
 }
 
