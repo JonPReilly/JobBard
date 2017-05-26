@@ -23,6 +23,7 @@ def getApplicationFormInfo(request):
         'linkedin' : settings.application_linkedin,
         'github' : settings.application_github,
         'gender' : settings.application_gender,
+        'zip' : settings.application_zip_code,
         'race' : settings.application_race,
         'veteran_status' : settings.application_veteran_status,
         'street_address' : settings.application_street_address,

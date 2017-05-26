@@ -151,6 +151,9 @@ class UserSettings(models.Model):
         ('P', 'PHD')
     )
     application_street_address = models.CharField(max_length=150,blank=True)
+    zip_regex = RegexValidator(regex=r'^\d{5}$',
+                                 message="Enter a valid zip code (format XXXXX)")
+    application_zip_code = models.CharField(validators=[zip_regex],max_length=5, blank=True)
     application_first_name = models.CharField(max_length=40,blank=True)
     application_last_name = models.CharField(max_length=40,blank=True)
     application_email = models.EmailField(blank=True)
