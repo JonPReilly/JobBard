@@ -17,7 +17,7 @@ A personal tool for scraping jobs from various tech-centered job sites, applying
 
 ## In short:
   ### Without JobBard:
-    1. Search 10+ job sites.
+    1. Find 10+ job sites that may have jobs relevant to your abilities.
     2. Search all sites individually.
     3. Find jobs you like.
     4. Take time filling out each application individually.
