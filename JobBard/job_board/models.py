@@ -47,6 +47,7 @@ class Job(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=450,null=True,blank=True)
     url = models.URLField(unique=True)
+    final_application_url = models.URLField(blank=True)
     company = models.ForeignKey(Company)
     required_experience = models.TextField(max_length=200,null=True,blank=True)
     years_experience_required = models.PositiveSmallIntegerField(null=True,blank=True)
