@@ -6,7 +6,7 @@ A personal tool for scraping jobs from various tech-centered job sites, applying
   
 ## Cool, so another job board?
   No- better. Why?
-    Job boards focus on keeping you on their site to view and apply jobs. JobBard finds and links to jobs on **every** site including Stackoverflow, Github, and Google careers to name a few.
+    Job boards focus on keeping you on their site to view and apply to jobs. JobBard finds and links to jobs on **every** site including Stackoverflow, Github, and Google careers to name a few.
 
 ## What about application tracking?
   Standard job boards also have a key problem. The application tracking system isn't built for the user. JobBard gives the user a system to track application statuses for jobs (again, from **every** source). This included changing application status (phone interview, on-site, etc), taking down notes, seting up interview times, etc. 
