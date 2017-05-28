@@ -10,8 +10,15 @@ function FormFiller()
     this.fillable_inputs = {};
     this.user_info = {};
 
+    this.handleSelectField = function() {
+        document.getElementById("job_application_veteran_status").selectedIndex = "1";
+    }
+    this.handleCheckboxField = function() {
+
+    }
     this.handleInputField = function(input_obj, val)
     {
+
         if (input_obj && val &&  input_obj.type !== "hidden" && ( input_obj.value = val ))
            input_obj.style.backgroundColor = "hsla(180, 100%, 50%, 0.15)";
     }
@@ -28,13 +35,21 @@ function FormFiller()
         return attribute_values;
     }
     this.regularExpressions = {
+        'full_name' : /^(?!.*(first|last|account|user|given|family)).*name/i,
         'email' : /^.*email/i,
-        'first_name' : /^.*first.*name/i,
-        'last_name' : /^.*last.*name/i,
-        'phone_number' : /^.*phone/i
+        'first_name' : /^.*(first|given).*name/i,
+        'last_name' : /^.*(last|family).*name/i,
+        'phone_number' : /^.*(phone|tel)/i,
+        'zip' : /^.*(zip|postal)/i,
+        'city' : /^.*city/i,
+        'street_address' : /^(?!.*(city|state|country)).*address(?!.*(2)).*/i,
+        'github' : /^.*github.*/i,
+        'linkedin' : /^.*linkedin.*/i
     }
     this.regexMatch = function(input) {
-        important_attributes = ['id', 'placeholder', 'name', 'aria-label', 'class']
+        if(input.type == "hidden")
+            return "";
+        important_attributes = ['id', 'placeholder', 'autocomplete' , 'name', 'aria-label', 'class']
         element_attributes = this.getElementAttributes(input, important_attributes);
 
         for(var x=0; x< element_attributes.length; x++)
@@ -59,10 +74,10 @@ function FormFiller()
         for(var x=0; x< inputs.length; x++)
         {
             match = this.regexMatch(inputs[x]);
-            if (match != "")
+            if (match != "" && !(match in matches))
                 matches[match] = inputs[x];
         }
-
+        console.log("Matches: " , matches);
         return matches;
     }
 
@@ -83,9 +98,7 @@ function FormFiller()
 
     }
 
-    this.mystery = function() {
-        console.log("hello!");
-    }
+
 
     this.getUserInformation = function(request_type, request_url, request_data, callback) {
         var r = new XMLHttpRequest();
@@ -104,8 +117,42 @@ function FormFiller()
         all_inputs = this.findAllInputs();
         this.fillable_inputs = this.regexMatchInputs(all_inputs);
         this.getUserInformation("GET", "http://127.0.0.1:8000/api/jobform", "", getUserInfo);
+
     }
 }
 
+console.log("******************* JobBard ***********************");
 var formFiller = new FormFiller();
 formFiller.fillForm();
+
+console.log(document.location.toString());
+console.log(document.referrer);
+console.log("**************************************************");
+/*
+var formFiller = new FormFiller();
+formFiller.fillForm();
+
+
+
+MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+var observer = new MutationObserver(function(mutations, observer) {
+    // fired when a mutation occurs
+    formFiller.fillForm();
+
+
+    // ...
+});
+
+// define what element should be observed by the observer
+// and what types of mutations trigger the callback
+observer.observe(document, {
+  subtree: true,
+  attributes: true
+  //...
+});
+*/
+
+
+// https://stackoverflow.com/questions/41225975/access-dom-elements-inside-iframe-from-chrome-extension
+// https://stackoverflow.com/questions/6570363/chrome-extension-content-scripts-and-iframe
