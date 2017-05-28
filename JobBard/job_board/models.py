@@ -74,7 +74,8 @@ class JobApplication(models.Model):
         ('NI', 'Not Interested'),
         ('OF', 'Offer'),
         ('AC', 'Accepted'),
-        ('RV','Recently Viewed')
+        ('RV','Recently Viewed'),
+        ('IC', 'More Information Required')
     )
 
     job = models.ForeignKey(Job)
