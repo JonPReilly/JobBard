@@ -54,3 +54,7 @@ class Location(models.Model):
 
     def __str__(self):
         return self.city.__str__() + ", " + self.state.__str__()
+
+class CitySearchCache(models.Model):
+    query = models.CharField(max_length=50)
+    reference = models.ForeignKey(City,null=True)
