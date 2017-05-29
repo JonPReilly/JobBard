@@ -51,10 +51,13 @@ def job_apply(request,jobID = None):
 
 
     job_created = createJobApplication(request.user,job_applied_to)
+    status = 200
     if(job_created):
         notifyUserOfJobApplication(request.user,job_applied_to)
+        status = 201
 
 
-    return JsonResponse({'applied': True})
+    return JsonResponse({'applied': True}, status=status)
+
 
 
