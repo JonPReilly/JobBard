@@ -1,7 +1,7 @@
 from uszipcode import ZipcodeSearchEngine
 from location.models import City, State, Location, CitySearchCache, Region, Country
 from django.db.models import Q
-from pygeocoder import Geocoder
+from pygeocoder import Geocoder, GeocoderError
 
 
 
@@ -31,17 +31,21 @@ class LocationManager:
 
 
     def getFromMapsAPI(self, location_string):
-        address = Geocoder.geocode(location_string)
-        print("Maps api:" , location_string)
-        print(address.raw)
+        try:
+            address = Geocoder.geocode(location_string)
+        except GeocoderError:
+            return None
+
+
+
 
         zip = address.postal_code
-        print("Zip:" , zip)
+
         if(zip != None):
             try:
                 return City.objects.get(zip_code=zip)
             except City.DoesNotExist:
-                print("Zip" , zip, " did not exist")
+
                 return None
         formatted_address = address.formatted_address
         if(formatted_address == None):
@@ -52,10 +56,9 @@ class LocationManager:
         state = address.state
         if (state == None or city_name == None):
             return None
-        print("City: " , city_name)
-        print("State" , state)
+
         possibilities = City.objects.exclude(region=None).filter(name__icontains=city_name, region__name__icontains=state)
-        print("Possibilitties: " , possibilities)
+
 
         if(possibilities.count() == 0):
             return None
@@ -63,9 +66,9 @@ class LocationManager:
         return possibilities[0]
 
     def parseCityString(self, location_string):
-        print("Parsing City String", location_string)
+
         loc = location_string.split(",")
-        print("Loc: " , loc)
+
         if(len(loc) != 2):
             return self.getFromMapsAPI(location_string)
 
@@ -73,19 +76,18 @@ class LocationManager:
         region = loc[1]
 
         possible_cities = City.objects.filter(name__icontains=city).filter(region__code__icontains=region).prefetch_related('region','region__country')
-        print("Location querey:", location_string )
-        print("Possible locations: ", possible_cities)
+
 
         if(possible_cities.count() > 1):
             return possible_cities[0]
         return self.getFromMapsAPI(location_string)
 
     def getCity(self, location_string):
-        print("In getCity for: " , location_string)
+
         found, cached_object = self.cityQuereyCache(location_string.lower())
-        print("Cached object: ", cached_object)
+
         if(found):
-            print("From cache: " , location_string, cached_object)
+
             return cached_object
 
         city_object = self.parseCityString(location_string)
@@ -93,7 +95,7 @@ class LocationManager:
             query = location_string.lower(),
             reference = city_object
         )
-        print(location_string, "\t", city_object)
+
         return city_object
 
 

@@ -18,6 +18,7 @@ def main():
         'scrapeIBM',
         'scrapeCisco',
         'scrapeFacebook',
+        'scrapeZiprecruiter'
 
     ]
     random.shuffle(commands)

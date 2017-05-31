@@ -7,9 +7,12 @@ class JobImporter:
         if (self.jobExists(url)):
             return #Do nothing for now. Update the job object in the future?
         if (location == None):
-            location = "Unknown, Unknown"
+            return
+
         company_object = self.getCompanyObject(company_name.title())
-        city_object =  self.getCityObject(location)
+        city_object =  self.getCityObject(location.replace("Unknown",""))
+        if(city_object == None):
+            return
         Job.objects.get_or_create(
             title=title,
             description=description,
