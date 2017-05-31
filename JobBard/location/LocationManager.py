@@ -1,5 +1,7 @@
 from uszipcode import ZipcodeSearchEngine
-from location.models import City, State, Location
+from location.models import City, State, Location, CitySearchCache, Region, Country
+from django.db.models import Q
+from pygeocoder import Geocoder
 
 
 
@@ -17,23 +19,83 @@ class LocationManager:
         cities_in_radius = self._getZipCodesNear(zip_code,radius_in_miles)
         return Location.objects.filter(city__pk__in = cities_in_radius )
 
-
-    def getOrCreate(self,city,state):
+    def cityQuereyCache(self, location_string):
 
         try:
-            location_object = self.getLocationObjectByCityState(city,state)
-            zip_code = location_object.Zipcode or "Unknown"
-            city_true_name = location_object.City or city
-            state_true_name = location_object.State or state
-            city_model, city_created = City.objects.get_or_create(name=city_true_name, zip_code=zip_code)
-            state_model, state_created = State.objects.get_or_create(name=state_true_name.title())
-            location_model, location_created = Location.objects.get_or_create(city=city_model,state=state_model)
-        except ValueError:
-            city_model, city_created = City.objects.get_or_create(name=city, zip_code="Invalid")
-            state_model, state_created = State.objects.get_or_create(name=state)
-            location_model, location_created = Location.objects.get_or_create(city=city_model, state=state_model)
+            cache_object = CitySearchCache.objects.get(query=location_string)
+            print("Cache for " , location_string, cache_object)
+            return (True , cache_object.reference)
+        except CitySearchCache.DoesNotExist:
+            print(location_string, " Not in cache")
+            return (False, None)
 
-        return location_model
+
+    def getFromMapsAPI(self, location_string):
+        address = Geocoder.geocode(location_string)
+        print("Maps api:" , location_string)
+        print(address.raw)
+
+        zip = address.postal_code
+        print("Zip:" , zip)
+        if(zip != None):
+            try:
+                return City.objects.get(zip_code=zip)
+            except City.DoesNotExist:
+                print("Zip" , zip, " did not exist")
+                return None
+        formatted_address = address.formatted_address
+        if(formatted_address == None):
+            return None
+
+        locaiton_array = formatted_address.split(",")
+        city_name = locaiton_array[0]
+        state = address.state
+        if (state == None or city_name == None):
+            return None
+        print("City: " , city_name)
+        print("State" , state)
+        possibilities = City.objects.exclude(region=None).filter(name__icontains=city_name, region__name__icontains=state)
+        print("Possibilitties: " , possibilities)
+
+        if(possibilities.count() == 0):
+            return None
+
+        return possibilities[0]
+
+    def parseCityString(self, location_string):
+        print("Parsing City String", location_string)
+        loc = location_string.split(",")
+        print("Loc: " , loc)
+        if(len(loc) != 2):
+            return self.getFromMapsAPI(location_string)
+
+        city = loc[0]
+        region = loc[1]
+
+        possible_cities = City.objects.filter(name__icontains=city).filter(region__code__icontains=region).prefetch_related('region','region__country')
+        print("Location querey:", location_string )
+        print("Possible locations: ", possible_cities)
+
+        if(possible_cities.count() > 1):
+            return possible_cities[0]
+        return self.getFromMapsAPI(location_string)
+
+    def getCity(self, location_string):
+        print("In getCity for: " , location_string)
+        found, cached_object = self.cityQuereyCache(location_string.lower())
+        print("Cached object: ", cached_object)
+        if(found):
+            print("From cache: " , location_string, cached_object)
+            return cached_object
+
+        city_object = self.parseCityString(location_string)
+        CitySearchCache.objects.create(
+            query = location_string.lower(),
+            reference = city_object
+        )
+        print(location_string, "\t", city_object)
+        return city_object
+
 
 
 

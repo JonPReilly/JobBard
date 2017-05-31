@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime, timedelta
-from location.models import Location
+from location.models import Location, City
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.formats import date_format
@@ -51,8 +51,9 @@ class Job(models.Model):
     company = models.ForeignKey(Company)
     required_experience = models.TextField(max_length=200,null=True,blank=True)
     years_experience_required = models.PositiveSmallIntegerField(null=True,blank=True)
-    location = models.ForeignKey(Location)
+    location = models.ForeignKey(Location, null=True, blank=True)
 
+    city = models.ForeignKey(City, null=True, blank=True)
     date_created = models.DateTimeField(auto_now=True)
 
     date_start_showing = models.DateTimeField(default=datetime.now())
@@ -60,7 +61,7 @@ class Job(models.Model):
     keywords = models.ManyToManyField(JobKeyWord,blank=True)
 
     def __str__(self):
-        return self.company.__str__() + " - " + self.title.__str__() + "\t(" + self.location.__str__() + ")"
+        return self.company.__str__() + " - " + self.title.__str__() + "\t <" + self.city.__str__() + ">"
 
 class JobApplication(models.Model):
     APPLICATION_STATUS = (

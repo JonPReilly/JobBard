@@ -9,20 +9,23 @@ class JobImporter:
         if (location == None):
             location = "Unknown, Unknown"
         company_object = self.getCompanyObject(company_name.title())
-        location_object =  self.getLocationObject(location)
-
+        city_object =  self.getCityObject(location)
         Job.objects.get_or_create(
             title=title,
             description=description,
             url = url,
             company = company_object,
-            location= location_object,
+            location= None,
             required_experience = required_experience,
-            years_experience_required=years_experience
+            years_experience_required=years_experience,
+            city = city_object
         )
 
 
 
+    def getCityObject(self, location):
+        locManager = LocationManager()
+        return locManager.getCity(location)
     def jobExists(self,url):
         try:
             Job.objects.get(url=url)

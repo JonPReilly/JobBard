@@ -6,6 +6,7 @@ from django.db import models
 
 class Country(models.Model):
     name = models.CharField(max_length=40, unique=True)
+    code = models.CharField(max_length=3,unique=True)
 
     class Meta:
         verbose_name_plural = "countries"
@@ -16,6 +17,7 @@ class Country(models.Model):
 class Region(models.Model):
     name = models.CharField(max_length=50, unique=True)
     country = models.ForeignKey(Country)
+    code = models.CharField(max_length=2, blank=True)
 
     def __str__(self):
         return self.name + " (" + self.country.__str__() + ")"
@@ -56,5 +58,8 @@ class Location(models.Model):
         return self.city.__str__() + ", " + self.state.__str__()
 
 class CitySearchCache(models.Model):
-    query = models.CharField(max_length=50)
+    query = models.CharField(max_length=50, unique=True)
     reference = models.ForeignKey(City,null=True)
+
+    def __str__(self):
+        return "\'{0}\': <{1}>".format(self.query, str(self.reference))
