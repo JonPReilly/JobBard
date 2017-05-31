@@ -35,7 +35,7 @@ function FormFiller()
         return attribute_values;
     }
     this.regularExpressions = {
-        'full_name' : /^(?!.*(first|last|account|user|given|family)).*name/i,
+        'full_name' : /^(?!.*(first|last|account|user|given|family|middle)).*name/i,
         'email' : /^.*email/i,
         'first_name' : /^.*(first|given).*name/i,
         'last_name' : /^.*(last|family).*name/i,
