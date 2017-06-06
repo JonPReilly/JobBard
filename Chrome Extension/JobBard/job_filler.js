@@ -80,7 +80,7 @@ function FormFiller()
                 matches[match] = inputs[x];
         }
         console.log("Matches: " , matches);
-        if(matches.length > inputs_filled_for_probable_job_form)
+        if(matches.length > this.inputs_filled_for_probable_job_form)
             this.probable_job_form = true;
         return matches;
     }
