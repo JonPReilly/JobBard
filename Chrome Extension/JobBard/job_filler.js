@@ -7,6 +7,8 @@ function getUserInfo(responseText)
 
 function FormFiller()
 {
+    this.probable_job_form = false;
+    this.inputs_filled_for_probable_job_form = 3;
     this.fillable_inputs = {};
     this.user_info = {};
 
@@ -78,6 +80,8 @@ function FormFiller()
                 matches[match] = inputs[x];
         }
         console.log("Matches: " , matches);
+        if(matches.length > inputs_filled_for_probable_job_form)
+            this.probable_job_form = true;
         return matches;
     }
 
