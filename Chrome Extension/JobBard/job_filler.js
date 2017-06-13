@@ -1,4 +1,4 @@
-
+//https://cs.chromium.org/chromium/src/components/autofill/core/browser/
 
 function getUserInfo(responseText)
 {
@@ -12,17 +12,27 @@ function FormFiller()
     this.fillable_inputs = {};
     this.user_info = {};
 
-    this.handleSelectField = function() {
-        document.getElementById("job_application_veteran_status").selectedIndex = "1";
+    this.setElementBackgroundColor = function(element) {
+        element.style.backgroundColor = "hsla(180, 100%, 50%, 0.15)";
     }
-    this.handleCheckboxField = function() {
-
+    this.handleElementChange = function(element, val) {
+        var element_type = element.tagName;
+        switch(element_type) {
+            case "INPUT":
+                this.handleInputField(element,val);
+                break;
+            case "SELECT":
+                console.log("SELECT!", element);
+                break;
+            default:
+                return;
+        }
     }
-    this.handleInputField = function(input_obj, val)
+    this.handleInputField = function(element, val)
     {
 
-        if (input_obj && val &&  input_obj.type !== "hidden" && ( input_obj.value = val ))
-           input_obj.style.backgroundColor = "hsla(180, 100%, 50%, 0.15)";
+        if (element && val &&  element.type !== "hidden" && ( element.value = val ))
+           this.setElementBackgroundColor(element);
     }
 
     this.getElementAttributes = function(element, attributes)
@@ -37,7 +47,7 @@ function FormFiller()
         return attribute_values;
     }
     this.regularExpressions = {
-        'full_name' : /^(?!.*(first|last|account|user|given|family|middle)).*name/i,
+        'full_name' : /^(?!.*(first|last|account|user|given|family|mid|login)).*name/i,
         'email' : /^.*email/i,
         'first_name' : /^.*(first|given|f).*name/i,
         'last_name' : /^.*(last|family|l).*name/i,
@@ -46,7 +56,8 @@ function FormFiller()
         'city' : /^.*city/i,
         'street_address' : /^(?!.*(city|state|country)).*address(?!.*(2)).*/i,
         'github' : /^.*github.*/i,
-        'linkedin' : /^.*linkedin.*/i
+        'linkedin' : /^.*linkedin.*/i,
+        'state' : /^(?!.*(united)).*(state|county|region)/i
     }
     this.regexMatch = function(input) {
         if(input.type == "hidden")
@@ -65,7 +76,14 @@ function FormFiller()
 
         return "";
     }
-
+    this.findAllLabels = function() {
+        var selects = document.getElementsByTagName("label");
+        return selects;
+    }
+    this.findAllSelects = function() {
+        var selects = document.getElementsByTagName("select");
+        return selects;
+    }
     this.findAllInputs = function() {
         var inputs = document.getElementsByTagName("input");
         return inputs;
@@ -91,7 +109,8 @@ function FormFiller()
 
         for (key in this.fillable_inputs)
         {
-            this.handleInputField(this.fillable_inputs[key], this.user_info[key]);
+
+            this.handleElementChange(this.fillable_inputs[key], this.user_info[key]);
         }
     }
 
@@ -117,9 +136,15 @@ function FormFiller()
         };
         r.send(request_data);
     }
-    this.fillForm = function() {
+    this.getFillableFields = function() {
         all_inputs = this.findAllInputs();
-        this.fillable_inputs = this.regexMatchInputs(all_inputs);
+        all_selects = this.findAllSelects();
+        console.log("All selects: " , all_selects);
+        return all_inputs;
+    }
+    this.fillForm = function() {
+        fillable_fields = this.getFillableFields();
+        this.fillable_inputs = this.regexMatchInputs(fillable_fields);
         this.getUserInformation("GET", "http://127.0.0.1:8000/api/jobform", "", getUserInfo);
 
     }
@@ -129,12 +154,15 @@ console.log("******************* JobBard ***********************");
 var formFiller = new FormFiller();
 formFiller.fillForm();
 
-console.log(document.location.toString());
-console.log(document.referrer);
 console.log("**************************************************");
+
+
+
 /*
-var formFiller = new FormFiller();
-formFiller.fillForm();
+MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+
+
 
 
 
@@ -142,7 +170,9 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var observer = new MutationObserver(function(mutations, observer) {
     // fired when a mutation occurs
-    formFiller.fillForm();
+    console.log("Muation occured");
+    console.log(mutations.type);
+    console.log(mutations);
 
 
     // ...
