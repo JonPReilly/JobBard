@@ -7,6 +7,41 @@ function getUserInfo(responseText)
 
 function FormFiller()
 {
+    this.declineToIdentifyRegex = /^.*(decline to|don\'t)/i;
+    this.selectionMapping = {
+        'veteran_status' : {
+            'N' : /^.*(no|am not)/i,
+            'Y' : /^(?!.*(not|no|select)).*(identify)/i,
+            'D' : this.declineToIdentifyRegex ,
+        },
+        'gender' : {
+            'M' : /^(?!.*(fe)).*(male)/i,
+            'F' : /^.*female.*/i,
+            'D' : this.declineToIdentifyRegex ,
+        },
+        'disability_status' : {
+            'N' : /^.*(no)/i,
+            'Y' : /^.*(yes)/i,
+            'D' : this.declineToIdentifyRegex ,
+
+        }
+    }
+    this.regularExpressions = {
+        'full_name' : /^(?!.*(first|last|account|user|given|family|mid|login)).*name/i,
+        'email' : /^.*email/i,
+        'first_name' : /^(?!.*(login|user)).*(first|given|f).*name/i,
+        'last_name' : /^(?!.*(login|user)).*(last|family|l).*name/i,
+        'phone_number' : /^.*(phone|tel)/i,
+        'zip' : /^.*(zip|postal)/i,
+        'city' : /^.*city/i,
+        'street_address' : /^(?!.*(city|state|country)).*address(?!.*(2)).*/i,
+        'github' : /^.*github.*/i,
+        'linkedin' : /^.*linkedin.*/i,
+        'state' : /^(?!.*(united)).*(state|county|region)/i,
+        'veteran_status' : /^.*veteran.*/i,
+        'gender' : /^.*(gender|sex).*/i,
+        'disability_status' : /^.*(disability|handicap).*/i
+    }
     this.probable_job_form = false;
     this.inputs_filled_for_probable_job_form = 3;
     this.fillable_inputs = {};
@@ -15,19 +50,21 @@ function FormFiller()
     this.setElementBackgroundColor = function(element) {
         element.style.backgroundColor = "hsla(180, 100%, 50%, 0.15)";
     }
-    this.handleElementChange = function(element, val) {
+
+    this.handleElementChange = function(element, val, attribute_key) {
         var element_type = element.tagName;
         switch(element_type) {
             case "INPUT":
                 this.handleInputField(element,val);
                 break;
             case "SELECT":
-                console.log("SELECT!", element);
+                this.handleSelectInput(element,val,attribute_key);
                 break;
             default:
                 return;
 
         }
+        this.setElementBackgroundColor(element);
     }
 
     this.handleRadioInput = function(element) {
@@ -37,6 +74,28 @@ function FormFiller()
     {
         element && val &&  element.type !== "hidden" && ( element.value = val )
     }
+    this.handleOptionInput = function(option)
+    {
+        option.selected = true;
+    }
+    this.handleSelectInput = function(select, user_value, attribute_key)
+    {
+        console.log("SELECT INPUT FIELD : " , select);
+        if (!(attribute_key in this.selectionMapping))
+            return;
+        console.log(attribute_key, user_value, attribute_key in this.selectionMapping)
+        var option_selection_regex = this.selectionMapping[attribute_key][user_value];
+        var options = select.options;
+        for(x=1; x<options.length; x++)
+        {
+            console.log(options[x].innerText, option_selection_regex,option_selection_regex.test(options[x].innerText) );
+            if(option_selection_regex.test(options[x].innerText))
+            {
+                this.handleOptionInput(options[x]);
+                return;
+            }
+        }
+    }
     this.handleInputField = function(element, val)
     {
         var input_type = element.type;
@@ -45,7 +104,6 @@ function FormFiller()
            case "url":
            case "email":
                 this.handleTextInput(element,val);
-                this.setElementBackgroundColor(element);
                 break;
            case "radio":
                 this.handleRadioInput(element);
@@ -66,20 +124,6 @@ function FormFiller()
                 attribute_values.push(value);
         }
         return attribute_values;
-    }
-    this.regularExpressions = {
-        'full_name' : /^(?!.*(first|last|account|user|given|family|mid|login)).*name/i,
-        'email' : /^.*email/i,
-        'first_name' : /^.*(first|given|f).*name/i,
-        'last_name' : /^.*(last|family|l).*name/i,
-        'phone_number' : /^.*(phone|tel)/i,
-        'zip' : /^.*(zip|postal)/i,
-        'city' : /^.*city/i,
-        'street_address' : /^(?!.*(city|state|country)).*address(?!.*(2)).*/i,
-        'github' : /^.*github.*/i,
-        'linkedin' : /^.*linkedin.*/i,
-        'state' : /^(?!.*(united)).*(state|county|region)/i,
-        'veteran_status' : /^.*veteran.*/i
     }
     this.regexMatch = function(input) {
         if(input.type == "hidden")
@@ -132,7 +176,7 @@ function FormFiller()
         for (key in this.fillable_inputs)
         {
 
-            this.handleElementChange(this.fillable_inputs[key], this.user_info[key]);
+            this.handleElementChange(this.fillable_inputs[key], this.user_info[key], key);
         }
     }
 
@@ -159,10 +203,8 @@ function FormFiller()
         r.send(request_data);
     }
     this.getFillableFields = function() {
-        all_inputs = this.findAllInputs();
-        all_selects = this.findAllSelects();
-        console.log("All selects: " , all_selects);
-        return all_inputs;
+        var elems = document.querySelectorAll("select,input");
+        return elems;
     }
     this.fillForm = function() {
         fillable_fields = this.getFillableFields();
