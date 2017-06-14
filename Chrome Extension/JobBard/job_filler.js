@@ -26,13 +26,34 @@ function FormFiller()
                 break;
             default:
                 return;
+
         }
+    }
+
+    this.handleRadioInput = function(element) {
+        element.checked = true;
+    }
+    this.handleTextInput = function(element, val)
+    {
+        element && val &&  element.type !== "hidden" && ( element.value = val )
     }
     this.handleInputField = function(element, val)
     {
+        var input_type = element.type;
+        switch(input_type) {
+           case "text":
+           case "url":
+           case "email":
+                this.handleTextInput(element,val);
+                this.setElementBackgroundColor(element);
+                break;
+           case "radio":
+                this.handleRadioInput(element);
+           default:
+                break;
 
-        if (element && val &&  element.type !== "hidden" && ( element.value = val ))
-           this.setElementBackgroundColor(element);
+        }
+
     }
 
     this.getElementAttributes = function(element, attributes)
@@ -57,7 +78,8 @@ function FormFiller()
         'street_address' : /^(?!.*(city|state|country)).*address(?!.*(2)).*/i,
         'github' : /^.*github.*/i,
         'linkedin' : /^.*linkedin.*/i,
-        'state' : /^(?!.*(united)).*(state|county|region)/i
+        'state' : /^(?!.*(united)).*(state|county|region)/i,
+        'veteran_status' : /^.*veteran.*/i
     }
     this.regexMatch = function(input) {
         if(input.type == "hidden")
@@ -70,15 +92,15 @@ function FormFiller()
             for (field_match in this.regularExpressions)
             {
                 if(this.regularExpressions[field_match].test(element_attributes[x]))
-                    return field_match
+                    return field_match;
             }
         }
 
         return "";
     }
     this.findAllLabels = function() {
-        var selects = document.getElementsByTagName("label");
-        return selects;
+        var labels = document.getElementsByTagName("label");
+        return labels;
     }
     this.findAllSelects = function() {
         var selects = document.getElementsByTagName("select");
@@ -153,6 +175,7 @@ function FormFiller()
 console.log("******************* JobBard ***********************");
 var formFiller = new FormFiller();
 formFiller.fillForm();
+
 
 console.log("**************************************************");
 
