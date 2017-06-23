@@ -63,6 +63,14 @@ class Job(models.Model):
     def __str__(self):
         return self.company.__str__() + " - " + self.title.__str__() + "\t <" + self.city.__str__() + ">"
 
+class ApplicationTimeStamp(models.Model):
+    date_created = models.DateTimeField(auto_now=True)
+    status = models.CharField(
+        max_length=2,
+        default='AP'
+    )
+    def __str__(self):
+        return self.status + ":\t" + self.date_created.strftime('%c')
 class JobApplication(models.Model):
     APPLICATION_STATUS = (
         ('SA','Saved'),
@@ -93,7 +101,16 @@ class JobApplication(models.Model):
         choices = APPLICATION_STATUS,
         default = 'AP'
     )
+    application_history = models.ManyToManyField(ApplicationTimeStamp,blank=True)
 
+    _previous_status = 'AP'
+    def save(self, *args, **kwargs):
+        if(self.pk != None):
+            prev_status = JobApplication.objects.only('application_status').get(pk=self.pk).application_status
+            if(prev_status != self.application_status):
+                self.application_history.create(status=self.application_status)
+
+        super(JobApplication,self).save(*args,**kwargs)
     def __str__(self):
         return "{0}\t: [{1}]\t ({2}) - {3}".format(self.user,self.job,self.application_status,date_format(self.date_applied, format='SHORT_DATETIME_FORMAT'))
 
