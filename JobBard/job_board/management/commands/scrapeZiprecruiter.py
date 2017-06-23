@@ -10,13 +10,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         url = "https://www.ziprecruiter.com/candidate/search?search={0}&location={1}&page={2}&no_header_footer=1&days=1"
 
-        queries = ['software', 'developer','python', 'systems']
-        locations = ['', 'boston', 'california', 'NY']
+        queries = ['software', 'developer', 'programmer']
+        locations = ['boston']
         urls = []
 
         for q in queries:
             for l in locations:
-                for x in range(3):
+                for x in range(2):
                     urls.append(url.format(q,l,x))
 
         ziprecruiter_scraper = ZiprecruiterScraper()

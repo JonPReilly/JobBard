@@ -47,4 +47,4 @@ class Command(BaseCommand):
             ghScraper.type = url[1]
             ghScraper.openUrl(url[0])
             ghScraper.scrapeUrl(url[0])
-            time.sleep(10)
+            time.sleep(5)
