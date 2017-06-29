@@ -134,3 +134,9 @@ class LocationManager:
     def getCloseCities(self,zip,radius_in_miles=15):
         close_zips = self._getZipCodesNear(zip,radius_in_miles)
         return City.objects.filter(zip_code__in=close_zips)
+
+    def citySearch(self, search_querey):
+        return City.objects.filter(
+            Q(name__icontains=search_querey) |
+            Q(region__name__icontains=search_querey)
+        ).exclude(region=None)
