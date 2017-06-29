@@ -9,15 +9,15 @@ class LocationManager:
     __search_object = ZipcodeSearchEngine()
 
 
-    def getCloseLocations(self,location,radius_in_miles =15):
-        city_name = location.city.name
-        state_name = location.state.name
+    def getCloseLocations(self,city,radius_in_miles =15):
+        city_name = city.name
+        state_name = city.region.name
         try:
             zip_code = self._getZipByCityState(city_name,state_name)
         except ValueError:
             return []
         cities_in_radius = self._getZipCodesNear(zip_code,radius_in_miles)
-        return Location.objects.filter(city__pk__in = cities_in_radius )
+        return Location.objects.filter(city__pk__in = cities_in_radius ).order_by('-date_created')
 
     def cityQuereyCache(self, location_string):
 
@@ -126,6 +126,11 @@ class LocationManager:
         except TypeError:
             return []
 
-        locations_in_radius = self.__search_object.by_coordinate(latitude,longitude,radius=radius_in_miles,returns=0)
+        zips_in_radius = self.__search_object.by_coordinate(latitude,longitude,radius=radius_in_miles,returns=0)
 
-        return set([location.pk for location in locations_in_radius])
+        return set([z['Zipcode'] for z in zips_in_radius])
+
+
+    def getCloseCities(self,zip,radius_in_miles=15):
+        close_zips = self._getZipCodesNear(zip,radius_in_miles)
+        return City.objects.filter(zip_code__in=close_zips)

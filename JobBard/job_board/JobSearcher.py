@@ -21,4 +21,12 @@ class JobSearcher:
 
     
     def getJobsFromCompany(self, company_quereyset):
-        return Job.objects.filter(company__in = company_quereyset)
+        return Job.objects.filter(company__in = company_quereyset).order_by('-date_created')
+
+    def getJobsInCity(self, cities):
+        return Job.objects.filter(city__in=cities).order_by('-date_created')
+
+    def getJobsInCityRadius(self,city,radius=15):
+        locManager = LocationManager()
+        close_cities = locManager.getCloseCities(city.zip_code)
+        return Job.objects.filter(city__in=close_cities).order_by('-date_created')
