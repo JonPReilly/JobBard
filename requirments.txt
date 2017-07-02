@@ -1,9 +1,15 @@
 beautifulsoup4==4.5.3
+certifi==2017.4.17
+chardet==3.0.4
 Django==1.11
 django-filter==1.0.4
 djangorestframework==3.6.3
+idna==2.5
 lxml==3.7.3
 Markdown==2.6.8
+pygeocoder==1.2.5
 pytz==2017.2
+requests==2.18.1
 selenium==3.3.3
+urllib3==1.21.1
 uszipcode==0.1.3
